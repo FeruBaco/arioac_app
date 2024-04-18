@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -37,12 +38,11 @@ class ProfileBottomContentState extends ConsumerState<ProfileBottomContent> {
   }
 
   void _downloadFile(String userId) async {
-    //TODO: Change this endpoint
     try {
       final url = await ref.read(authProvider.notifier).getCertificate();
       if (url.length > 1) await DownloadingService.createDownloadTask(url);
     } catch (e) {
-      print("error");
+      debugPrint(e.toString());
     }
   }
 

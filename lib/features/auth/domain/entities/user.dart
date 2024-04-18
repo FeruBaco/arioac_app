@@ -13,6 +13,7 @@ class User {
   final String token;
   final Role role;
   final bool hasFood;
+  final String paymentStatus;
 
   const User({
     required this.id,
@@ -27,6 +28,7 @@ class User {
     required this.token,
     this.role = Role.user,
     this.hasFood = false,
+    this.paymentStatus = 'Desconocido',
   });
 
   @override

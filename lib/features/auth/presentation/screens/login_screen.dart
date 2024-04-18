@@ -1,6 +1,7 @@
 import 'package:arioac_app/features/shared/widgets/login_filled_button.dart';
 import 'package:arioac_app/features/shared/widgets/login_text_form_field.dart';
 import 'package:arioac_app/features/shared/widgets/wave_background.dart';
+import 'package:arioac_app/features/shared/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,10 @@ class _LoginForm extends ConsumerWidget {
   void showSnackbar(BuildContext context, String errorMessage) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(errorMessage)),
+      AppSnackBar(
+        content: errorMessage,
+        context: context,
+      ),
     );
   }
 

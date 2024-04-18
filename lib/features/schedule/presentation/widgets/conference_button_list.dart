@@ -1,9 +1,12 @@
+import 'dart:ui';
+import 'dart:isolate';
 import 'package:arioac_app/features/schedule/domain/domain.dart';
 import 'package:arioac_app/features/schedule/presentation/widgets/widgets.dart';
 import 'package:arioac_app/features/shared/infrastructure/services/downloading_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
-class ConferenceButtonList extends StatelessWidget {
+class ConferenceButtonList extends StatefulWidget {
   final Conference conference;
   final Function changeScreen;
   const ConferenceButtonList({
@@ -11,6 +14,28 @@ class ConferenceButtonList extends StatelessWidget {
     required this.conference,
     required this.changeScreen,
   });
+
+  @override
+  State<StatefulWidget> createState() => ConferenceButtonListState();
+}
+
+class ConferenceButtonListState extends State<ConferenceButtonList> {
+  final _receivePort = ReceivePort();
+
+  @override
+  void initState() {
+    super.initState();
+    IsolateNameServer.registerPortWithName(
+        _receivePort.sendPort, DownloadingService.downloadingPortName);
+    FlutterDownloader.registerCallback(DownloadingService.downloadingCallBack);
+    _receivePort.listen((message) {});
+  }
+
+  @override
+  void dispose() {
+    _receivePort.close();
+    super.dispose();
+  }
 
   void _downloadFile(String materialURL) async {
     try {
@@ -23,12 +48,13 @@ class ConferenceButtonList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final conference = widget.conference;
 
     return Column(
       children: [
         ConferenceButton(
           onPressed: () async {
-            changeScreen(1);
+            widget.changeScreen(1);
           },
           size: Size(size.width * .8, 40),
           child: Text(
@@ -42,7 +68,7 @@ class ConferenceButtonList extends StatelessWidget {
         if (conference.hasSurvey)
           ConferenceButton(
             onPressed: () {
-              changeScreen(2);
+              widget.changeScreen(2);
             },
             size: Size(size.width * .8, 40),
             child: Text(
@@ -74,7 +100,7 @@ class ConferenceButtonList extends StatelessWidget {
               ],
             ),
           ),
-        Padding(padding: EdgeInsets.only(bottom: 30))
+        const Padding(padding: EdgeInsets.only(bottom: 30))
       ],
     );
   }

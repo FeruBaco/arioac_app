@@ -27,7 +27,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } on AuthException catch (e) {
       logout(e.msg);
     } catch (e) {
-      logout('Unhandled error.');
+      logout('🤯 Ocurrio un error innesperado.');
     }
   }
 
@@ -64,7 +64,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> getUserById(String id) async {
-    state = state.copyWith(isUserCheckLoading: true);
+    state = state.copyWith(isUserCheckLoading: true, userCheckError: false);
     final token = await storageService.getValue<String>('token');
     try {
       if (token == null) {

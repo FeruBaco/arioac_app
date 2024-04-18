@@ -12,6 +12,7 @@ class UserMapper {
         userJobPosition: json['jobTitle'] ?? '',
         config: json['config'] ?? '',
         token: json['token'] ?? '',
+        paymentStatus: json['paymentStatus'] ?? 'Desconocido',
         role: switch (json['role']) {
           'user' => Role.user,
           'sponsor' => Role.sponsor,

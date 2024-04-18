@@ -33,15 +33,14 @@ class DownloadingService {
     }
 
     final taskId = await FlutterDownloader.enqueue(
-        url: url,
-        savedDir: path,
-        showNotification: true,
-        // show download progress in status bar (for Android)
-        openFileFromNotification: true,
-        // click on notification to open downloaded file (for Android)
-        saveInPublicStorage: true);
-
-    await Future.delayed(const Duration(seconds: 1));
+      url: url,
+      savedDir: path,
+      showNotification: true,
+      // show download progress in status bar (for Android)
+      openFileFromNotification: true,
+      // click on notification to open downloaded file (for Android)
+      saveInPublicStorage: true,
+    );
 
     if (taskId != null) {
       await FlutterDownloader.open(taskId: taskId);

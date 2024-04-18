@@ -1,5 +1,6 @@
 import 'package:arioac_app/config/router_notifier.dart';
 import 'package:arioac_app/features/admin/presentation/screens/qr_screen.dart';
+import 'package:arioac_app/features/admin/presentation/screens/user_show_screen.dart';
 import 'package:arioac_app/features/auth/domain/domain.dart';
 import 'package:arioac_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:arioac_app/features/auth/presentation/screens/screens.dart';
@@ -38,7 +39,12 @@ final goRouterProvider = Provider(
         GoRoute(
           name: 'adminQrScanner',
           path: '/admin_qr_scanner',
-          builder: (context, state) => const QRScreen(),
+          builder: (context, state) => QRScreen(),
+        ),
+        GoRoute(
+          name: 'adminShowUser',
+          path: '/admin_show_user',
+          builder: (context, state) => const UserShowScreen(),
         ),
         GoRoute(
           name: 'speakerQrScanner',
@@ -67,7 +73,7 @@ final goRouterProvider = Provider(
           // Admin routes
           if (routeName!.startsWith('admin')) {
             if (userRole == Role.admin) {
-              return '/admin_qr_scanner';
+              return null;
             }
 
             return '/home';
