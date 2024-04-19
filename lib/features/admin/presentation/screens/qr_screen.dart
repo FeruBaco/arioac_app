@@ -12,7 +12,6 @@ class QRScreen extends ConsumerStatefulWidget {
 }
 
 class QRScreenState extends ConsumerState<QRScreen> {
-// class QRScreen extends ConsumerWidget {
   List<Barcode> qrs = [];
   MobileScannerController controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
@@ -34,7 +33,6 @@ class QRScreenState extends ConsumerState<QRScreen> {
   }
 
   @override
-  // Widget build(BuildContext context, WidgetRef ref) {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Focus(

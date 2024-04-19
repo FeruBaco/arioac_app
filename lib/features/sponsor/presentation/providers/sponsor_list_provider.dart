@@ -12,16 +12,17 @@ class SponsorListState {
   final int offset;
   final int limit;
   final List<SponsorUser> users;
+  final String errMsg;
 
-  SponsorListState({
-    this.isLoading = false,
-    this.isPageLoading = false,
-    this.isLastPage = false,
-    this.isAdding = FormStatus.empty,
-    this.limit = 10,
-    this.offset = 1,
-    this.users = const [],
-  });
+  SponsorListState(
+      {this.isLoading = false,
+      this.isPageLoading = false,
+      this.isLastPage = false,
+      this.isAdding = FormStatus.empty,
+      this.limit = 10,
+      this.offset = 1,
+      this.users = const [],
+      this.errMsg = ''});
 
   SponsorListState copyWith({
     bool? isLoading,
@@ -31,16 +32,17 @@ class SponsorListState {
     int? offset,
     int? limit,
     List<SponsorUser>? users,
+    String? errMsg,
   }) =>
       SponsorListState(
-        isLoading: isLoading ?? this.isLoading,
-        isPageLoading: isPageLoading ?? this.isPageLoading,
-        isLastPage: isLastPage ?? this.isLastPage,
-        isAdding: isAdding ?? this.isAdding,
-        offset: offset ?? this.offset,
-        limit: limit ?? this.limit,
-        users: users ?? this.users,
-      );
+          isLoading: isLoading ?? this.isLoading,
+          isPageLoading: isPageLoading ?? this.isPageLoading,
+          isLastPage: isLastPage ?? this.isLastPage,
+          isAdding: isAdding ?? this.isAdding,
+          offset: offset ?? this.offset,
+          limit: limit ?? this.limit,
+          users: users ?? this.users,
+          errMsg: errMsg ?? this.errMsg);
 }
 
 class SponsorListNotifier extends StateNotifier<SponsorListState> {
@@ -52,8 +54,12 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
   }
 
   Future<void> pullRefresh() async {
-    state = state
-        .copyWith(users: [], isLastPage: false, isLoading: false, offset: 1);
+    state = state.copyWith(
+      users: [],
+      isLastPage: false,
+      isLoading: false,
+      offset: 1,
+    );
     await loadNextPage();
   }
 
@@ -95,7 +101,7 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
     );
   }
 
-  Future<void> addUser(String userId) async {
+  Future<void> addUserToList(String userId) async {
     if (state.isLoading) return;
 
     state = state.copyWith(isLoading: true);
@@ -113,6 +119,7 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
       state = state.copyWith(
         isLoading: false,
         isAdding: FormStatus.failed,
+        errMsg: e.toString(),
       );
       changeEmptyFormStatus();
     }

@@ -48,7 +48,7 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
   Future<SponsorUser> addUserToList(String userId) async {
     try {
       final response = await dio.post(
-        '/sponsors/users',
+        '/sponsors/participant',
         data: {'userId': userId},
       );
       final user = SponsorListMapper.jsonToEntity(response.data);
@@ -71,14 +71,15 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
   }
 
   @override
-  Future<List<SponsorUser>> getUsersByPage({int limit = 20, offset = 1}) async {
+  Future<List<SponsorUser>> getUsersByPage({int limit = 20, offset}) async {
     try {
       final response = await dio.get(
-        '/sponsors/users?_page=$offset&_limit=$limit&_sort=votes&_order=desc',
+        '/sponsors/participants?page=$offset',
       );
 
       final List<SponsorUser> users = [];
-      for (final user in response.data ?? []) {
+      final responseData = response.data['data'];
+      for (final user in responseData ?? []) {
         users.add(SponsorListMapper.jsonToEntity(user));
       }
       return users;

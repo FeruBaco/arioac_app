@@ -64,21 +64,30 @@ class ProfileBottomContentState extends ConsumerState<ProfileBottomContent> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                ref.read(authProvider).user?.userName ?? 'err: NO_NAME',
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
+              Flexible(
+                flex: 1,
+                child: Text(
+                  ref.read(authProvider).user?.userName ?? 'err: NO_NAME',
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-              QrImageView(
-                  // size: 250,
-                  padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                  data: ref.read(authProvider).user?.id ?? 'err: NO_ID_CODE'),
-              GestureDetector(
-                child: const CertificateRectangle(),
-                onTap: () async {
-                  _downloadFile(user.id);
-                },
+              Flexible(
+                flex: 3,
+                child: QrImageView(
+                    // size: 250,
+                    padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                    data: ref.read(authProvider).user?.id ?? 'err: NO_ID_CODE'),
+              ),
+              Flexible(
+                flex: 1,
+                child: GestureDetector(
+                  child: const CertificateRectangle(),
+                  onTap: () async {
+                    _downloadFile(user.id);
+                  },
+                ),
               )
             ],
           ),

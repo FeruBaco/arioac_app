@@ -1,6 +1,7 @@
 import 'package:arioac_app/features/shared/widgets/circular_loading_indicator.dart';
 import 'package:arioac_app/features/sponsor/presentation/providers/providers.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -40,7 +41,8 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final sponsorList = ref.watch(sponsorListProvider);
-
+    final Size size = MediaQuery.of(context).size;
+    int counter = 0;
     // ref.listen(sponsorListProvider, (prev, next) {
     //   if (next.isAdding == FormStatus.empty) return;
 
@@ -66,58 +68,84 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
     //         .show();
     //   }
     // });
-
     return Stack(
+      alignment: Alignment.center,
       children: [
         Column(
-          verticalDirection: VerticalDirection.down,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'PREMIOS',
+              'Participantes',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            (sponsorList.isLoading)
+            (sponsorList.isPageLoading)
                 ? const Expanded(child: CircularLoadingIndicator())
                 : Flexible(
                     child: RefreshIndicator(
                       onRefresh:
                           ref.read(sponsorListProvider.notifier).pullRefresh,
                       child: SingleChildScrollView(
+                        controller: scrollController,
+                        padding: EdgeInsets.only(
+                          bottom: size.height / 8,
+                        ),
                         scrollDirection: Axis.vertical,
                         child: DataTable(
                           dataRowMinHeight: 60,
-                          dataRowMaxHeight: 80,
+                          dataRowMaxHeight: 100,
                           columnSpacing: BorderSide.strokeAlignCenter,
-                          columns: const [
-                            DataColumn(label: Text('Nombre')),
-                            DataColumn(label: Text('Empresa')),
-                            DataColumn(label: Text('Borrar')),
+                          columns: [
+                            DataColumn(
+                              label: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: size.width / 2,
+                                  minWidth: size.width / 2,
+                                ),
+                                child: const Text(
+                                  'Nombre',
+                                  overflow: TextOverflow.fade,
+                                ),
+                              ),
+                            ),
+                            DataColumn(
+                                label: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: size.width / 2,
+                                      minWidth: size.width / 2,
+                                    ),
+                                    child: const Text(
+                                      'Empresa',
+                                      overflow: TextOverflow.fade,
+                                    ))),
+                            // DataColumn(
+                            //     label: ConstrainedBox(
+                            //         constraints: BoxConstraints(
+                            //           minWidth: (size.width / 3) * .5,
+                            //         ),
+                            //         child: const Text('Borrar'))),
                           ],
                           rows: sponsorList.users
-                              .map(
-                                (data) => DataRow(
-                                  cells: [
-                                    DataCell(Text(data.userName)),
-                                    DataCell(Text(data.companyName)),
-                                    DataCell(
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          backgroundColor: Colors.red,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        child: const Icon(Icons.delete),
-                                        onPressed: () {},
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
+                              .map((data) => DataRow(
+                                    cells: [
+                                      DataCell(Text(data.userName)),
+                                      DataCell(Text(data.companyName!)),
+                                      // DataCell(
+                                      //   ElevatedButton(
+                                      //     style: ElevatedButton.styleFrom(
+                                      //       shape: RoundedRectangleBorder(
+                                      //         borderRadius:
+                                      //             BorderRadius.circular(10.0),
+                                      //       ),
+                                      //       backgroundColor: Colors.red,
+                                      //       foregroundColor: Colors.white,
+                                      //     ),
+                                      //     child: const Icon(Icons.delete),
+                                      //     onPressed: () {},
+                                      //   ),
+                                      // )
+                                    ],
+                                  ))
                               .toList(),
                         ),
                       ),
@@ -128,22 +156,30 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
         Positioned(
           right: 20,
           bottom: 20,
-          child: FloatingActionButton.extended(
-            heroTag: null,
-            label: Text(
-              "Agregar participante",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(color: Colors.white),
-            ),
-            icon: const Icon(Icons.add),
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            isExtended: true,
-            onPressed: () => context.push('/speaker_qr_scanner'),
+          child: Column(
+            children: [
+              FloatingActionButton(
+                heroTag: null,
+                backgroundColor: Colors.amber,
+                foregroundColor: Colors.white,
+                isExtended: true,
+                onPressed: () => context.push('/sponsor_qr_scanner'),
+                child: const Icon(Icons.casino),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                isExtended: true,
+                onPressed: () => context.push('/sponsor_qr_scanner'),
+                child: const Icon(Icons.add),
+              ),
+            ],
           ),
-        )
+        ),
       ],
     );
   }

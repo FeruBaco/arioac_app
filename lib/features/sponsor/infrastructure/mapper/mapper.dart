@@ -1,4 +1,3 @@
-//TODO: Change image
 import '../../domain/domain.dart';
 
 class SponsorMapper {
@@ -34,10 +33,10 @@ class WinnerMapper {
 class SponsorListMapper {
   static jsonToEntity(Map<String, dynamic> json) => SponsorUser(
         id: json['id'],
-        companyName: json['companyName'],
-        userName: json['userName'],
-        userPhone: json['userPhone'],
-        userEmail: json['userEmail'],
-        userJobPosition: json['userJobPosition'],
+        companyName: json['companyName'] ?? '',
+        userName: json['name'],
+        userPhone: json['phone'],
+        userEmail: json['email'],
+        userJobPosition: json['userJobPosition'] ?? '',
       );
 }

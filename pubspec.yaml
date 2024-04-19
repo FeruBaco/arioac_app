@@ -55,7 +55,6 @@ dependencies:
   carousel_slider: ^4.2.1
   device_info_plus: ^10.1.0
   mobile_scanner: ^4.0.1
-  open_filex: ^4.4.0
 
 dev_dependencies:
   flutter_test:

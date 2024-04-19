@@ -44,15 +44,15 @@ class QADatasourceImpl extends QADatasource {
     int offset = 1,
   }) async {
     try {
-      final response = await dio.get('/questions/speaker?page=$offset');
+      final response = await dio.get('/speaker/questions?page=$offset');
       final List<QA> qas = [];
-
-      for (final qa in response.data ?? []) {
+      final data = response.data['data'];
+      for (final qa in data ?? []) {
         qas.add(QAMapper.jsonToEntity(qa));
       }
       return qas;
     } catch (e) {
-      throw Exception();
+      throw Exception(e);
     }
   }
 
@@ -71,7 +71,6 @@ class QADatasourceImpl extends QADatasource {
     }
   }
 
-// TODO: Missing endpoint
   @override
   Future<QA> uploadAnswer(
       {required String answer, required String questionId}) async {
@@ -88,11 +87,11 @@ class QADatasourceImpl extends QADatasource {
   @override
   Future<QA> voteQuestion({required String questionId}) async {
     try {
-      final response = await dio.put('/questions/$questionId/vote/');
+      final response = await dio.put('/vote/questions/$questionId');
       final qa = QAMapper.jsonToEntity(response.data);
       return qa;
     } catch (e) {
-      throw Exception();
+      throw Exception(e);
     }
   }
 }

@@ -5,7 +5,6 @@ import 'package:arioac_app/features/auth/domain/domain.dart';
 import 'package:arioac_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:arioac_app/features/auth/presentation/screens/screens.dart';
 import 'package:arioac_app/features/admin/presentation/screens/screens.dart';
-import 'package:arioac_app/features/speaker/presentation/screens/screens.dart';
 import 'package:arioac_app/features/sponsor/presentation/screens/screens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +38,7 @@ final goRouterProvider = Provider(
         GoRoute(
           name: 'adminQrScanner',
           path: '/admin_qr_scanner',
-          builder: (context, state) => QRScreen(),
+          builder: (context, state) => const QRScreen(),
         ),
         GoRoute(
           name: 'adminShowUser',
@@ -47,9 +46,9 @@ final goRouterProvider = Provider(
           builder: (context, state) => const UserShowScreen(),
         ),
         GoRoute(
-          name: 'speakerQrScanner',
-          path: '/speaker_qr_scanner',
-          builder: (context, state) => const SpeakerQRScreen(),
+          name: 'sponsorQRScanner',
+          path: '/sponsor_qr_scanner',
+          builder: (context, state) => const SponsorQRScreen(),
         )
       ],
       redirect: (context, state) {
@@ -75,16 +74,14 @@ final goRouterProvider = Provider(
             if (userRole == Role.admin) {
               return null;
             }
-
             return '/home';
           }
 
           // Sponsor routes
-          if (routeName.startsWith('speaker')) {
+          if (routeName.startsWith('sponsor')) {
             if (userRole == Role.sponsor) {
-              return '/speaker_qr_scanner';
+              return null;
             }
-
             return '/home';
           }
         }

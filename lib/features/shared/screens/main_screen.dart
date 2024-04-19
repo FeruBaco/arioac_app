@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:arioac_app/features/profile/presentation/screens/profile_screen.dart';
 import 'package:arioac_app/features/speaker/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +63,16 @@ class _MainScreenState extends State<MainScreen> {
         labelStyle: const TextStyle(color: Colors.white),
       ));
       screens.add(const SpeakerScreen());
+      navigationBarItems.add(CurvedNavigationBarItem(
+        child: Icon(
+          Icons.calendar_month_outlined,
+          color: activeColor(1),
+          semanticLabel: 'Programa',
+        ),
+        label: 'Programa',
+        labelStyle: const TextStyle(color: Colors.white),
+      ));
+      screens.add(const ScheduleScreen());
     }
 
     if (role == Role.sponsor) {
@@ -138,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Container(
             width: double.infinity,
-            height: 110,
+            height: (Platform.isAndroid ? 100.0 : 110.0),
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(

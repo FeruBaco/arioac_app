@@ -37,7 +37,7 @@ class SponsorsRepositoryImpl extends SponsorsRepository {
 
   @override
   Future<List<SponsorUser>> getUsersByPage({int limit = 20, offset = 1}) {
-    return datasource.getUsersByPage();
+    return datasource.getUsersByPage(limit: limit, offset: offset);
   }
 
   @override

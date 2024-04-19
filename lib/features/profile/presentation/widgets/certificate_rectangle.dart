@@ -33,14 +33,17 @@ class CertificateRectangle extends StatelessWidget {
               ),
               Flexible(
                 flex: 2,
-                child: Text(
-                  'DESCARGAR RECONOCIMIENTO',
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: blueAccent,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    'DESCARGAR \n RECONOCIMIENTO',
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: blueAccent,
+                    ),
                   ),
                 ),
               ),

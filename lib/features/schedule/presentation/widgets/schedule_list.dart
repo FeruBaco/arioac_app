@@ -42,15 +42,40 @@ class ScheduleListState extends ConsumerState {
 
     return scheduleState.isPageLoading
         ? const CircularLoadingIndicator()
-        : ListView.builder(
+        : SingleChildScrollView(
             controller: scrollController,
-            physics: const BouncingScrollPhysics(),
-            itemCount: scheduleState.schedules.length,
-            itemBuilder: (context, index) {
-              final scheduleItem = scheduleState.schedules[index];
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'PROGRAMA',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const Text(
+                      '  DÍA 1',
+                      style: TextStyle(
+                          backgroundColor: Color(0xFFF8F7F7),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color.fromRGBO(85, 176, 106, 1)),
+                    ),
+                  ],
+                ),
+                ListView.builder(
+                  // controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: scheduleState.schedules.length,
+                  itemBuilder: (context, index) {
+                    final scheduleItem = scheduleState.schedules[index];
 
-              return ScheduleListItem(scheduleItem: scheduleItem);
-            },
-          );
+                    return ScheduleListItem(scheduleItem: scheduleItem);
+                  },
+                ),
+              ],
+            ));
   }
 }

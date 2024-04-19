@@ -3,51 +3,66 @@ import 'package:arioac_app/features/sponsor/presentation/providers/providers.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
-class SpeakerQRScreen extends ConsumerStatefulWidget {
-  const SpeakerQRScreen({super.key});
+class SponsorQRScreen extends ConsumerStatefulWidget {
+  const SponsorQRScreen({super.key});
 
   @override
-  SpeakerQRScreenState createState() => SpeakerQRScreenState();
+  SponsorQRScreenState createState() => SponsorQRScreenState();
 }
 
-class SpeakerQRScreenState extends ConsumerState<SpeakerQRScreen> {
-  bool isDetected = false;
+class SponsorQRScreenState extends ConsumerState<SponsorQRScreen> {
+  List<Barcode> qrs = [];
+  MobileScannerController controller = MobileScannerController(
+    detectionSpeed: DetectionSpeed.noDuplicates,
+    facing: CameraFacing.back,
+    autoStart: false,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    controller.start();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // QRScanner(
-        //   onChanged: (cameraController) {
-        //     cameraController.scannedDataStream.listen((scanData) async {
-        //       isDetected = true;
-        //       await cameraController.pauseCamera();
-        //       String? code = scanData.code;
-
-        //       if (code != null && isDetected) {
-        //         if (context.mounted) {
-        //           ref.read(sponsorListProvider.notifier).addUser(code);
-        //           context.pop();
-        // showModalBottomSheet(
-        //   isScrollControlled: true,
-        //   context: context,
-        //   builder: (BuildContext context) {
-        //     return const FractionallySizedBox(
-        //       heightFactor: 0.7,
-        //       child: UserShowScreen(),
-        //     );
-        //   },
-        // ).whenComplete(() {
-        //   cameraController.resumeCamera();
-        //   isDetected = false;
-        // });
-        // }
-        // }
-        // });
-        // },
-        // ),
-      ],
+    return Scaffold(
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: controller,
+            onDetect: (capture) async {
+              qrs = capture.barcodes;
+              String? qr = qrs[0].rawValue;
+              ref.read(sponsorListProvider.notifier).addUserToList(qr!);
+              context.pop();
+            },
+          ),
+          Positioned(
+            top: 60,
+            left: 10,
+            child: IconButton(
+              onPressed: () {
+                controller.dispose();
+                context.pop();
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
