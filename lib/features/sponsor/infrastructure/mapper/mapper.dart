@@ -24,7 +24,7 @@ class SponsorMapper {
 
 class WinnerMapper {
   static jsonToEntity(Map<String, dynamic> json) => Winner(
-        giveawayId: json['giveawayId'],
+        giveawayId: json['id'],
         userName: json['userName'],
         sponsorName: json['sponsorName'],
       );

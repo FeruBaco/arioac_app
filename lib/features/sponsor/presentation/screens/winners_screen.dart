@@ -10,9 +10,9 @@ class WinnersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final winnerState = ref.watch(winnersProvider);
+    final Size size = MediaQuery.of(context).size;
 
     return Column(
-      verticalDirection: VerticalDirection.down,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -39,16 +39,39 @@ class WinnersScreen extends ConsumerWidget {
         ),
         (winnerState.isLoading)
             ? const CircularLoadingIndicator()
-            : Flexible(
+            : Expanded(
                 child: RefreshIndicator(
                   onRefresh: ref.read(winnersProvider.notifier).getWinners,
                   child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     child: DataTable(
                       columnSpacing: BorderSide.strokeAlignCenter,
-                      columns: const [
-                        DataColumn(label: Text('Ganador')),
-                        DataColumn(label: Text('Patrocinador')),
+                      columns: [
+                        DataColumn(
+                          label: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: size.width / 2,
+                              minWidth: size.width / 2,
+                            ),
+                            child: const Text(
+                              'Ganador',
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: size.width / 2,
+                              minWidth: size.width / 2,
+                            ),
+                            child: const Text(
+                              'Patrocinador',
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                        ),
                       ],
                       rows: winnerState.winners
                           .map(

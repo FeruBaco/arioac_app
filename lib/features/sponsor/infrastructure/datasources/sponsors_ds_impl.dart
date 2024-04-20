@@ -102,13 +102,17 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
 
   @override
   Future<List<Winner>> getWinnerList() async {
-    final response = await dio.get('/sponsors/winners');
-    final List<Winner> winners = [];
-    for (final winner in response.data ?? []) {
-      winners.add(WinnerMapper.jsonToEntity(winner));
+    try {
+      final response = await dio.get('/giveaway/winners');
+      final List<Winner> winners = [];
+      final data = response.data['data'];
+      for (final winner in data) {
+        winners.add(WinnerMapper.jsonToEntity(winner));
+      }
+      return winners;
+    } catch (e) {
+      throw Exception(e);
     }
-
-    return winners;
   }
 
   @override
