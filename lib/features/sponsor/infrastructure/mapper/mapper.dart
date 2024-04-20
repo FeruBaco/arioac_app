@@ -33,10 +33,12 @@ class WinnerMapper {
 class SponsorListMapper {
   static jsonToEntity(Map<String, dynamic> json) => SponsorUser(
         id: json['id'],
+        shortId: json['userId'] ?? '',
         companyName: json['companyName'] ?? '',
         userName: json['name'],
         userPhone: json['phone'],
         userEmail: json['email'],
         userJobPosition: json['userJobPosition'] ?? '',
+        isWinner: json['isWinner'] ?? false,
       );
 }

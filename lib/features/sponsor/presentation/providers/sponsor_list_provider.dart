@@ -60,6 +60,7 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
   }
 
   Future<void> pullRefresh() async {
+    restart();
     state = state.copyWith(
       users: [],
       isLastPage: false,
@@ -110,7 +111,7 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
   Future<void> addUserToList(String userId) async {
     if (state.isLoading) return;
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, isAdding: FormStatus.checking);
 
     try {
       final SponsorUser response =
@@ -142,6 +143,28 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, errMsg: e.toString());
     }
+  }
+
+  Future<void> registerWinner(String userId) async {
+    if (state.isLoading) return;
+
+    state = state.copyWith(isLoading: true, isAdding: FormStatus.checking);
+
+    try {
+      await sponsorsRepository.registerWinner(userId);
+      state = state.copyWith(
+          isLoading: false, winner: null, isAdding: FormStatus.success);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errMsg: e.toString(),
+        isAdding: FormStatus.failed,
+      );
+    }
+  }
+
+  void restart() {
+    state = state.copyWith(isAdding: FormStatus.checking);
   }
 }
 

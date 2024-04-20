@@ -8,5 +8,5 @@ abstract class SponsorsRepository {
   Future<SponsorUser> addUserToList(String userId);
   Future<SponsorUser> removeUserToList(String userId);
   Future<SponsorUser> doLottery();
-  Future<SponsorUser> registerWinner();
+  Future<SponsorUser> registerWinner(String userId);
 }

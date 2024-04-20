@@ -1,5 +1,4 @@
 import 'package:arioac_app/config/environment.dart';
-import 'package:arioac_app/features/auth/infrastructure/infrastructure.dart';
 import 'package:arioac_app/features/sponsor/domain/domain.dart';
 import 'package:arioac_app/features/sponsor/infrastructure/mapper/mapper.dart';
 import 'package:dio/dio.dart';
@@ -23,7 +22,8 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
         '/sponsors/participant',
         data: {'userId': userId},
       );
-      final user = SponsorListMapper.jsonToEntity(response.data);
+      final data = response.data['data'];
+      final user = SponsorListMapper.jsonToEntity(data);
       return user;
     } on DioException catch (e) {
       int? statusCode = e.response?.statusCode;
@@ -40,7 +40,8 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
   Future<SponsorUser> doLottery() async {
     try {
       final response = await dio.get('/participants/winner');
-      final user = SponsorListMapper.jsonToEntity(response.data);
+      final data = response.data['data'];
+      final user = SponsorListMapper.jsonToEntity(data);
       return user;
     } catch (e) {
       rethrow;
@@ -101,13 +102,21 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
   }
 
   @override
-  Future<SponsorUser> registerWinner() async {
+  Future<SponsorUser> registerWinner(String userId) async {
     try {
-      final response = await dio.post('/participants/winner');
-      final user = SponsorListMapper.jsonToEntity(response.data);
+      final response =
+          await dio.post('/participants/winner', data: {'userId': userId});
+      final data = response.data['data'];
+      final user = SponsorListMapper.jsonToEntity(data);
       return user;
+    } on DioException catch (e) {
+      int? statusCode = e.response?.statusCode;
+      if (statusCode == 409) {
+        throw Exception('😰 Ups! Este participante ya gano.');
+      }
+      throw Exception('😰 Ups! Algo salio mal.');
     } catch (e) {
-      rethrow;
+      throw Exception('😰 Ups! Algo salio mal.');
     }
   }
 

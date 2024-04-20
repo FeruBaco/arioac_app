@@ -12,9 +12,9 @@ SnackBar AppSnackBar(
           ),
     ),
     backgroundColor: backgroundColor ?? Colors.green,
-    elevation: 10,
     duration: const Duration(seconds: 5),
     behavior: SnackBarBehavior.floating,
     margin: const EdgeInsets.all(10),
+    elevation: 200,
   );
 }
