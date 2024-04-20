@@ -75,6 +75,7 @@ class AnswerFormNotifier extends StateNotifier<AnswerFormState> {
         isFormPosted: FormStatus.failed,
         isPosting: false,
       );
+      updateFormStatus();
     }
   }
 

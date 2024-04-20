@@ -57,6 +57,7 @@ class QuestionListState extends ConsumerState<QuestionList> {
                 return Column(
                   children: [
                     QAListItem(
+                      index: index,
                       question: question,
                       cardColor: selectedColor,
                     ),

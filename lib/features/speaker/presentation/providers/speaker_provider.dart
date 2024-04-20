@@ -87,7 +87,6 @@ class SpeakerNotifier extends StateNotifier<SpeakerState> {
 
   Future<void> uploadAnswer(String questionId, String answer) async {
     if (state.isLoading) return;
-
     state = state.copyWith(isLoading: true);
 
     try {
@@ -95,8 +94,6 @@ class SpeakerNotifier extends StateNotifier<SpeakerState> {
         answer: answer,
         questionId: questionId,
       );
-      state.qas.add(response);
-      state.qas.sort((a, b) => b.votes.compareTo(a.votes));
       state = state.copyWith(isLoading: false, qas: [...state.qas]);
     } catch (e) {
       state = state.copyWith(isLoading: false);

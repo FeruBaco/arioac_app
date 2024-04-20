@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
 
-// class AppSnackBar extends StatelessWidget {
-//   final Widget content;
-//   const AppSnackBar({
-//     super.key,
-//     required this.content,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SnackBar(
-//       content: content,
-//       backgroundColor: Colors.green,
-//       elevation: 10,
-//     );
-//   }
-// }
-
-SnackBar AppSnackBar({required String content, required BuildContext context}) {
+SnackBar AppSnackBar(
+    {required String content,
+    required BuildContext context,
+    Color? backgroundColor}) {
   return SnackBar(
     content: Text(
       content,
@@ -25,7 +11,7 @@ SnackBar AppSnackBar({required String content, required BuildContext context}) {
             color: Colors.white,
           ),
     ),
-    backgroundColor: Colors.green,
+    backgroundColor: backgroundColor ?? Colors.green,
     elevation: 10,
     duration: const Duration(seconds: 5),
     behavior: SnackBarBehavior.floating,
