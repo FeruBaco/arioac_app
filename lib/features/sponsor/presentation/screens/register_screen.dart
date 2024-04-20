@@ -1,9 +1,7 @@
-import 'package:arioac_app/features/shared/widgets/circular_loading_indicator.dart';
+import 'package:arioac_app/features/shared/widgets/widgets.dart';
 import 'package:arioac_app/features/sponsor/presentation/providers/providers.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/domain/entities/forms.dart';
@@ -19,55 +17,29 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
   final ScrollController scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-
-    scrollController.addListener(
-      () {
-        if ((scrollController.position.pixels + 200) >=
-            scrollController.position.maxScrollExtent) {
-          ref.read(sponsorListProvider.notifier).loadNextPage();
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final sponsorList = ref.watch(sponsorListProvider);
     final Size size = MediaQuery.of(context).size;
-    int counter = 0;
-    // ref.listen(sponsorListProvider, (prev, next) {
-    //   if (next.isAdding == FormStatus.empty) return;
 
-    //   if (next.isAdding == FormStatus.success) {
-    //     AwesomeDialog(
-    //       context: context,
-    //       dialogType: DialogType.success,
-    //       animType: AnimType.bottomSlide,
-    //       autoHide: const Duration(milliseconds: 2000),
-    //       title: 'Se agrego correctamente.',
-    //       desc: 'El participante se agrego correctamente.',
-    //     ).show();
-    //   }
+    ref.listen(sponsorListProvider, (prev, next) async {
+      if (next.isAdding == FormStatus.checking) return;
 
-    //   if (next.isAdding == FormStatus.failed) {
-    //     AwesomeDialog(
-    //             context: context,
-    //             dialogType: DialogType.error,
-    //             animType: AnimType.bottomSlide,
-    //             autoHide: const Duration(milliseconds: 2000),
-    //             title: 'Error al agregar participante.',
-    //             desc: 'No se ha podido conectar con el servidor.')
-    //         .show();
-    //   }
-    // });
+      if (next.isAdding == FormStatus.success) {
+        showSnackbar(
+          context: context,
+          msg: '😀 Participante agregado',
+        );
+      }
+
+      if (next.isAdding == FormStatus.failed) {
+        showSnackbar(
+          context: context,
+          msg: next.errMsg,
+          color: Colors.red,
+        );
+      }
+    });
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -92,8 +64,8 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         scrollDirection: Axis.vertical,
                         child: DataTable(
-                          dataRowMinHeight: 60,
-                          dataRowMaxHeight: 100,
+                          dataRowMinHeight: 40,
+                          dataRowMaxHeight: 80,
                           columnSpacing: BorderSide.strokeAlignCenter,
                           columns: [
                             DataColumn(
@@ -126,26 +98,28 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                             //         child: const Text('Borrar'))),
                           ],
                           rows: sponsorList.users
-                              .map((data) => DataRow(
-                                    cells: [
-                                      DataCell(Text(data.userName)),
-                                      DataCell(Text(data.companyName!)),
-                                      // DataCell(
-                                      //   ElevatedButton(
-                                      //     style: ElevatedButton.styleFrom(
-                                      //       shape: RoundedRectangleBorder(
-                                      //         borderRadius:
-                                      //             BorderRadius.circular(10.0),
-                                      //       ),
-                                      //       backgroundColor: Colors.red,
-                                      //       foregroundColor: Colors.white,
-                                      //     ),
-                                      //     child: const Icon(Icons.delete),
-                                      //     onPressed: () {},
-                                      //   ),
-                                      // )
-                                    ],
-                                  ))
+                              .map(
+                                (data) => DataRow(
+                                  cells: [
+                                    DataCell(Text(data.userName)),
+                                    DataCell(Text(data.companyName!)),
+                                    // DataCell(
+                                    //   ElevatedButton(
+                                    //     style: ElevatedButton.styleFrom(
+                                    //       shape: RoundedRectangleBorder(
+                                    //         borderRadius:
+                                    //             BorderRadius.circular(10.0),
+                                    //       ),
+                                    //       backgroundColor: Colors.red,
+                                    //       foregroundColor: Colors.white,
+                                    //     ),
+                                    //     child: const Icon(Icons.delete),
+                                    //     onPressed: () {},
+                                    //   ),
+                                    // )
+                                  ],
+                                ),
+                              )
                               .toList(),
                         ),
                       ),
@@ -163,10 +137,11 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.white,
                 isExtended: true,
-                onPressed: () => context.push('/sponsor_qr_scanner'),
-                child: const Icon(Icons.casino),
+                onPressed: () =>
+                    ref.read(sponsorListProvider.notifier).doLottery(),
+                child: const Icon(Icons.emoji_events),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               FloatingActionButton(
@@ -175,12 +150,47 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                 foregroundColor: Colors.white,
                 isExtended: true,
                 onPressed: () => context.push('/sponsor_qr_scanner'),
-                child: const Icon(Icons.add),
+                child: const Icon(Icons.add_a_photo),
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(
+      () {
+        if ((scrollController.position.pixels + 200) >=
+            scrollController.position.maxScrollExtent) {
+          ref.read(sponsorListProvider.notifier).loadNextPage();
+        }
+      },
+    );
+  }
+
+  void showSnackbar({
+    required BuildContext context,
+    required String msg,
+    Color? color,
+  }) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      AppSnackBar(
+        content: msg,
+        context: context,
+        backgroundColor: color,
+      ),
     );
   }
 }

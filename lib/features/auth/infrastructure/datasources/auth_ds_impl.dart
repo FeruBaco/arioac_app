@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:arioac_app/features/auth/infrastructure/errors/auth_errors.dart';
 import 'package:arioac_app/features/auth/infrastructure/mappers/user_mapper.dart';
-import 'package:arioac_app/features/shared/infrastructure/services/downloading_service.dart';
 import 'package:dio/dio.dart';
 import 'package:arioac_app/config/environment.dart';
 import 'package:arioac_app/features/auth/domain/domain.dart';
-import 'package:path_provider/path_provider.dart';
 
 class AuthDatasourceImpl extends AuthDatasource {
   final dio = Dio(BaseOptions(

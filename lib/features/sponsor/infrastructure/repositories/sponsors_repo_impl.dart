@@ -31,8 +31,8 @@ class SponsorsRepositoryImpl extends SponsorsRepository {
   }
 
   @override
-  Future getUserList() {
-    return datasource.getUserList();
+  Future<SponsorUser> registerWinner() {
+    return datasource.registerWinner();
   }
 
   @override

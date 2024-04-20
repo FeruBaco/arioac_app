@@ -13,16 +13,19 @@ class SponsorListState {
   final int limit;
   final List<SponsorUser> users;
   final String errMsg;
+  final SponsorUser? winner;
 
-  SponsorListState(
-      {this.isLoading = false,
-      this.isPageLoading = false,
-      this.isLastPage = false,
-      this.isAdding = FormStatus.empty,
-      this.limit = 10,
-      this.offset = 1,
-      this.users = const [],
-      this.errMsg = ''});
+  SponsorListState({
+    this.isLoading = false,
+    this.isPageLoading = false,
+    this.isLastPage = false,
+    this.isAdding = FormStatus.empty,
+    this.limit = 10,
+    this.offset = 1,
+    this.users = const [],
+    this.winner,
+    this.errMsg = '',
+  });
 
   SponsorListState copyWith({
     bool? isLoading,
@@ -32,17 +35,20 @@ class SponsorListState {
     int? offset,
     int? limit,
     List<SponsorUser>? users,
+    SponsorUser? winner,
     String? errMsg,
   }) =>
       SponsorListState(
-          isLoading: isLoading ?? this.isLoading,
-          isPageLoading: isPageLoading ?? this.isPageLoading,
-          isLastPage: isLastPage ?? this.isLastPage,
-          isAdding: isAdding ?? this.isAdding,
-          offset: offset ?? this.offset,
-          limit: limit ?? this.limit,
-          users: users ?? this.users,
-          errMsg: errMsg ?? this.errMsg);
+        isLoading: isLoading ?? this.isLoading,
+        isPageLoading: isPageLoading ?? this.isPageLoading,
+        isLastPage: isLastPage ?? this.isLastPage,
+        isAdding: isAdding ?? this.isAdding,
+        offset: offset ?? this.offset,
+        limit: limit ?? this.limit,
+        users: users ?? this.users,
+        winner: winner ?? this.winner,
+        errMsg: errMsg ?? this.errMsg,
+      );
 }
 
 class SponsorListNotifier extends StateNotifier<SponsorListState> {
@@ -122,6 +128,19 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
         errMsg: e.toString(),
       );
       changeEmptyFormStatus();
+    }
+  }
+
+  Future<void> doLottery() async {
+    if (state.isLoading) return;
+
+    state = state.copyWith(isLoading: true);
+
+    try {
+      final winner = await sponsorsRepository.doLottery();
+      state = state.copyWith(isLoading: false, winner: winner);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errMsg: e.toString());
     }
   }
 }

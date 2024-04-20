@@ -1,4 +1,5 @@
 import 'package:arioac_app/config/environment.dart';
+import 'package:arioac_app/features/auth/infrastructure/infrastructure.dart';
 import 'package:arioac_app/features/sponsor/domain/domain.dart';
 import 'package:arioac_app/features/sponsor/infrastructure/mapper/mapper.dart';
 import 'package:dio/dio.dart';
@@ -16,6 +17,37 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
         ));
 
   @override
+  Future<SponsorUser> addUserToList(String userId) async {
+    try {
+      final response = await dio.post(
+        '/sponsors/participant',
+        data: {'userId': userId},
+      );
+      final user = SponsorListMapper.jsonToEntity(response.data);
+      return user;
+    } on DioException catch (e) {
+      int? statusCode = e.response?.statusCode;
+      if (statusCode == 409) {
+        throw Exception('😰 Ups! No se pudo registrar participante');
+      }
+      throw Exception();
+    } catch (e) {
+      throw Exception('😰 Ups! Error al agregar participante');
+    }
+  }
+
+  @override
+  Future<SponsorUser> doLottery() async {
+    try {
+      final response = await dio.get('/participants/winner');
+      final user = SponsorListMapper.jsonToEntity(response.data);
+      return user;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<Sponsor> getSponsorById(String id) {
     // TODO: This endpoint is not required
     throw UnimplementedError();
@@ -31,37 +63,6 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
     }
 
     return sponsors;
-  }
-
-  @override
-  Future<List<Winner>> getWinnerList() async {
-    final response = await dio.get('/sponsors/winners');
-    final List<Winner> winners = [];
-    for (final winner in response.data ?? []) {
-      winners.add(WinnerMapper.jsonToEntity(winner));
-    }
-
-    return winners;
-  }
-
-  @override
-  Future<SponsorUser> addUserToList(String userId) async {
-    try {
-      final response = await dio.post(
-        '/sponsors/participant',
-        data: {'userId': userId},
-      );
-      final user = SponsorListMapper.jsonToEntity(response.data);
-      return user;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
-  @override
-  Future<SponsorUser> doLottery() {
-    // TODO: implement doLottery
-    throw UnimplementedError();
   }
 
   @override
@@ -85,6 +86,28 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
       return users;
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<Winner>> getWinnerList() async {
+    final response = await dio.get('/sponsors/winners');
+    final List<Winner> winners = [];
+    for (final winner in response.data ?? []) {
+      winners.add(WinnerMapper.jsonToEntity(winner));
+    }
+
+    return winners;
+  }
+
+  @override
+  Future<SponsorUser> registerWinner() async {
+    try {
+      final response = await dio.post('/participants/winner');
+      final user = SponsorListMapper.jsonToEntity(response.data);
+      return user;
+    } catch (e) {
+      rethrow;
     }
   }
 
