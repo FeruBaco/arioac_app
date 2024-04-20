@@ -73,6 +73,7 @@ flutter:
 
   assets:
     - .env
+    - .env.dev
     - images/asset_1.png
     - images/asset_2.png
     - images/asset_3.png
