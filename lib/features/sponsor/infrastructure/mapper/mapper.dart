@@ -38,7 +38,7 @@ class SponsorListMapper {
         userName: json['name'],
         userPhone: json['phone'],
         userEmail: json['email'],
-        userJobPosition: json['userJobPosition'] ?? '',
+        userJobPosition: json['jobTitle'] ?? '',
         isWinner: json['isWinner'] ?? false,
       );
 }

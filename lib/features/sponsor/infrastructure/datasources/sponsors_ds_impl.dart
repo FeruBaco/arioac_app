@@ -37,6 +37,16 @@ class SponsorsDatasourceImpl extends SponsorsDatasource {
   }
 
   @override
+  Future<String> generateCSV() async {
+    try {
+      final response = await dio.get('/export/participants');
+      return response.data['url'];
+    } catch (e) {
+      throw Exception('😰 Ups! Error al agregar participante');
+    }
+  }
+
+  @override
   Future<SponsorUser> doLottery() async {
     try {
       final response = await dio.get('/participants/winner');

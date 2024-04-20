@@ -145,6 +145,18 @@ class SponsorListNotifier extends StateNotifier<SponsorListState> {
     }
   }
 
+  Future<String> generateCSV() async {
+    try {
+      final url = await sponsorsRepository.generateCSV();
+      state = state.copyWith(
+        isLoading: false,
+      );
+      return url;
+    } catch (e) {
+      return '';
+    }
+  }
+
   Future<void> registerWinner(String userId) async {
     if (state.isLoading) return;
 

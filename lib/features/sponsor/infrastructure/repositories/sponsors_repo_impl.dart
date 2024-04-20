@@ -44,4 +44,9 @@ class SponsorsRepositoryImpl extends SponsorsRepository {
   Future<SponsorUser> removeUserToList(String userId) {
     return datasource.removeUserToList(userId);
   }
+
+  @override
+  Future<String> generateCSV() {
+    return datasource.generateCSV();
+  }
 }

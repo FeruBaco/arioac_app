@@ -9,4 +9,5 @@ abstract class SponsorsDatasource {
   Future<SponsorUser> removeUserToList(String userId);
   Future<SponsorUser> doLottery();
   Future<SponsorUser> registerWinner(String userId);
+  Future<String> generateCSV();
 }

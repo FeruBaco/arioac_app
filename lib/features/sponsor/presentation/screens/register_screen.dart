@@ -1,7 +1,12 @@
+import 'dart:isolate';
+import 'dart:ui';
+
+import 'package:arioac_app/features/shared/infrastructure/services/downloading_service.dart';
 import 'package:arioac_app/features/shared/widgets/widgets.dart';
 import 'package:arioac_app/features/sponsor/presentation/providers/providers.dart';
 import 'package:arioac_app/features/sponsor/presentation/screens/participant_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +21,16 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class RegisterScreenState extends ConsumerState<RegisterScreen> {
   final ScrollController scrollController = ScrollController();
+  final _receivePort = ReceivePort();
+
+  void _downloadFile() async {
+    try {
+      final url = await ref.read(sponsorListProvider.notifier).generateCSV();
+      if (url.length > 1) await DownloadingService.createDownloadTask(url);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +61,19 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
       body: Stack(
         alignment: Alignment.center,
         children: [
+          Positioned(
+            top: 0,
+            right: 20,
+            child: FloatingActionButton(
+              heroTag: null,
+              mini: true,
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              // isExtended: true,
+              onPressed: () => _downloadFile(),
+              child: const Icon(Icons.download),
+            ),
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,7 +171,7 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                   isExtended: true,
                   onPressed: () async {
                     ref.read(sponsorListProvider.notifier).restart();
-                    await ref.read(sponsorListProvider.notifier).doLottery();
+                    ref.read(sponsorListProvider.notifier).doLottery();
                     showModalBottomSheet(
                       context: context,
                       enableDrag: true,
@@ -174,12 +202,19 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   void dispose() {
     scrollController.dispose();
+    _receivePort.close();
+
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+
+    IsolateNameServer.registerPortWithName(
+        _receivePort.sendPort, DownloadingService.downloadingPortName);
+    FlutterDownloader.registerCallback(DownloadingService.downloadingCallBack);
+    _receivePort.listen((message) {});
 
     scrollController.addListener(
       () {
