@@ -47,7 +47,7 @@ class UserShowScreenState extends ConsumerState<UserShowScreen> {
               ),
             ),
             (isLoading && user == null)
-                ? const Expanded(child: CircularLoadingIndicator())
+                ? const CircularLoadingIndicator()
                 : (hasError)
                     ? Expanded(
                         child: Center(

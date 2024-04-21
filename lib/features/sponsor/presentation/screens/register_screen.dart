@@ -172,11 +172,19 @@ class RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onPressed: () async {
                     ref.read(sponsorListProvider.notifier).restart();
                     ref.read(sponsorListProvider.notifier).doLottery();
-                    showModalBottomSheet(
-                      context: context,
-                      enableDrag: true,
-                      builder: ((context) => const ParticipantScreen()),
-                    );
+                    if (ref.read(sponsorListProvider).winner != null) {
+                      showModalBottomSheet(
+                        context: context,
+                        enableDrag: true,
+                        builder: ((context) => const ParticipantScreen()),
+                      );
+                    } else {
+                      showSnackbar(
+                        context: context,
+                        msg: '☹️ No existen participantes registrados',
+                        color: Colors.blue,
+                      );
+                    }
                   },
                   child: const Icon(Icons.emoji_events),
                 ),
