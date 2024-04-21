@@ -10,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
   WidgetsFlutterBinding.ensureInitialized();
+
   await Permission.notification.request();
   await Permission.notification.isDenied.then((value) {
     if (value) {

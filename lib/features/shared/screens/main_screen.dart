@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Container(
             width: double.infinity,
-            height: (Platform.isAndroid ? 100.0 : 110.0),
+            height: (Platform.isAndroid ? 100.0 : 100.0),
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(

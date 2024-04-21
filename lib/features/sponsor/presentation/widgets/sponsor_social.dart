@@ -18,14 +18,15 @@ class SponsorSocial extends StatelessWidget {
         }
       },
       child: CircleAvatar(
-          radius: 30,
-          backgroundColor: const Color.fromRGBO(38, 120, 135, 1),
-          child: _selectIcon(platform)),
+        radius: 25,
+        backgroundColor: const Color.fromRGBO(38, 120, 135, 1),
+        child: Center(child: _selectIcon(platform)),
+      ),
     );
   }
 
   Icon _selectIcon(platform) {
-    const double iconSize = 28;
+    const double iconSize = 24;
 
     Icon selectedIcon = const Icon(
       FontAwesomeIcons.notdef,

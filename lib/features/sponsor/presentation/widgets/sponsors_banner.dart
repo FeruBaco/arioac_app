@@ -44,14 +44,13 @@ class SponsorsBanner extends StatelessWidget {
                   RichText(
                     maxLines: 2,
                     textAlign: TextAlign.justify,
-                    text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w900,
-                      ),
+                    text: TextSpan(
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium
+                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                       text: 'PREMIOS DE ',
-                      children: [
+                      children: const [
                         TextSpan(
                             text: 'PATROCINADORES \n',
                             style: TextStyle(color: Colors.red)),

@@ -29,8 +29,9 @@ class MainConferenceScreenState extends ConsumerState<MainConferenceScreen> {
 
   void changeScreen(int i) {
     setState(() {
-      _pageController.animateToPage(i,
-          duration: const Duration(milliseconds: 500), curve: Curves.linear);
+      _pageController.jumpToPage(i);
+      // _pageController.animateToPage(i,
+      //     duration: const Duration(milliseconds: 500), curve: Curves.linear);
     });
   }
 
