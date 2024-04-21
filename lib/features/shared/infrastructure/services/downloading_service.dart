@@ -10,19 +10,20 @@ class DownloadingService {
 
   static Future<void> createDownloadTask(String url) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    int sdk = androidInfo.version.sdkInt;
-
-    final storagePermission = await _permissionGranted(sdk);
-    PermissionStatus status;
-    if (!storagePermission) {
-      if (sdk >= 33) {
-        status = await Permission.manageExternalStorage.request();
-      } else {
-        status = await Permission.storage.request();
-      }
-      if (!status.isGranted) {
-        return;
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      int sdk = androidInfo.version.sdkInt;
+      final storagePermission = await _permissionGranted(sdk);
+      PermissionStatus status;
+      if (!storagePermission) {
+        if (sdk >= 33) {
+          status = await Permission.manageExternalStorage.request();
+        } else {
+          status = await Permission.storage.request();
+        }
+        if (!status.isGranted) {
+          return;
+        }
       }
     }
 
